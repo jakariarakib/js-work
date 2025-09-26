@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .progressbar {
+            width: 300px;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progressbar-full {
+             height: 100%;
+      background-color: #4caf50;
+      transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="progressbar">
+        <div class="progressbar-full" id="progress"></div>
+    </div>
+
+    <script>
+       function updateprogressbar(progresspercentage) {
+        const ProgressbarFull = document.getElementById('progress');
+        ProgressbarFull.style.width = `${progresspercentage}%`;
+       }
+       updateprogressbar(40);
+    </script>
+</body>
+</html>

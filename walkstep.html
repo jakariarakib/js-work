@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lifetime Steps Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background: #4CAF50;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Lifetime Steps Calculator</h2>
+
+    <label>Age (years):</label>
+    <input type="number" id="age" min="1" value="30">
+
+    <label>Distance home ↔ school/office (km):</label>
+    <input type="number" id="schoolDist" step="0.1" value="1">
+
+    <label>Distance home ↔ market (km):</label>
+    <input type="number" id="marketDist" step="0.1" value="0.5">
+
+    <label>Market visits per week:</label>
+    <input type="number" id="marketVisits" value="3">
+
+    <label>Distance home ↔ mosque (km):</label>
+    <input type="number" id="mosqueDist" step="0.1" value="0.3">
+
+    <label>Mosque visits per day:</label>
+    <input type="number" id="mosqueVisits" value="5">
+
+    <button onclick="calculateSteps()">Calculate</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateSteps() {
+      const stepsPerKm = 1300;
+      const daysPerYear = 365;
+
+      let age = parseInt(document.getElementById("age").value);
+      let schoolDist = parseFloat(document.getElementById("schoolDist").value);
+      let marketDist = parseFloat(document.getElementById("marketDist").value);
+      let marketVisits = parseInt(document.getElementById("marketVisits").value);
+      let mosqueDist = parseFloat(document.getElementById("mosqueDist").value);
+      let mosqueVisits = parseInt(document.getElementById("mosqueVisits").value);
+
+      // Assume 16 years school/college, rest work
+      const schoolYears = 16;
+      const workYears = Math.max(0, age - schoolYears - 5);
+
+      // School steps (5 days/week, round trip)
+      const schoolWalks = schoolYears * (5 * daysPerYear / 7);
+      const schoolSteps = schoolDist * 2 * stepsPerKm * schoolWalks;
+
+      // Work steps (5 days/week, round trip)
+      const workWalks = workYears * (5 * daysPerYear / 7);
+      const workSteps = schoolDist * 2 * stepsPerKm * workWalks;
+
+      // Market steps (weekly visits, round trip)
+      const marketTrips = age * (marketVisits * daysPerYear / 7);
+      const marketSteps = marketDist * 2 * stepsPerKm * marketTrips;
+
+      // Mosque steps (daily visits, round trip)
+      const prayerTrips = age * mosqueVisits * daysPerYear;
+      const mosqueSteps = mosqueDist * 2 * stepsPerKm * prayerTrips;
+
+      const totalSteps = Math.round(schoolSteps + workSteps + marketSteps + mosqueSteps);
+
+      document.getElementById("result").innerText =
+        "Approximate total steps in lifetime: " + totalSteps.toLocaleString();
+    }
+  </script>
+</body>
+</html>
