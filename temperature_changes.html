@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>City Temperature Predictor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+    }
+    button {
+      background: #ff7f50;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background: #ff6347;
+    }
+    .table-container {
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+    table {
+      border-collapse: collapse;
+      margin: auto;
+    }
+    td, th {
+      border: 1px solid #555;
+      padding: 8px 12px;
+      text-align: center;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #222;
+      font-weight: bold;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h2>🌡️ City Temperature Predictor</h2>
+
+  <label>Enter temperatures (°C) at consecutive times:</label>
+  <input id="tempInput" type="text" placeholder="e.g. 20,22,24,27,30">
+  <button onclick="predictTemp()">Predict Next Temperature</button>
+
+  <div class="table-container">
+    <table id="differenceTable"></table>
+  </div>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    function finiteDifferenceTable(sequence) {
+      let table = [sequence.slice()];
+
+      // Build differences
+      while (table[table.length - 1].length > 1) {
+        let prevRow = table[table.length - 1];
+        let newRow = [];
+        for (let i = 0; i < prevRow.length - 1; i++) {
+          newRow.push(prevRow[i + 1] - prevRow[i]);
+        }
+        table.push(newRow);
+      }
+
+      // Extend rows for prediction
+      for (let row = table.length - 1; row >= 0; row--) {
+        let last = table[row][table[row].length - 1];
+        if (row === table.length - 1) {
+          table[row].push(last); // bottom row constant
+        } else {
+          let prevLast = table[row + 1][table[row + 1].length - 1];
+          table[row].push(last + prevLast);
+        }
+      }
+
+      return table;
+    }
+
+    function renderTable(table) {
+      let html = "<tr>";
+      for (let i = 0; i < table[0].length; i++) html += `<th>t${i+1}</th>`;
+      html += "</tr>";
+
+      for (let r = 0; r < table.length; r++) {
+        html += "<tr>";
+        for (let c = 0; c < table[r].length; c++) {
+          html += "<td>" + table[r][c].toFixed(2) + "</td>";
+        }
+        html += "</tr>";
+      }
+      document.getElementById("differenceTable").innerHTML = html;
+    }
+
+    function predictTemp() {
+      let input = document.getElementById("tempInput").value;
+      if (!input.trim()) return;
+
+      let temps = input.split(",").map(x => parseFloat(x.trim()));
+      if (temps.some(isNaN)) {
+        alert("Please enter valid numbers separated by commas.");
+        return;
+      }
+
+      let table = finiteDifferenceTable(temps);
+      renderTable(table);
+
+      let nextTemp = table[0][table[0].length - 1];
+      document.getElementById("result").textContent =
+        "👉 Predicted Next Temperature: " + nextTemp.toFixed(2) + "°C";
+    }
+  </script>
+</body>
+</html>
