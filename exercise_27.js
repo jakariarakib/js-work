@@ -1,13 +1,13 @@
-const start_spec_equal = (str) =>{
-    if (str.lebgth < 4){
+const start_spec_equal = (str) => {
+    if (str.length < 4){
         return false;
     }
-    const excat = str.substring(0, 4)
-    if (excat === 'Java'){
+    const exact = str.substring(0, 4);
+    if (exact === 'Java'){
         return true;
-    } else{
+    } else {
         return false;
     }
 }
 
-console.log(start_spec_equal('Javascript'))
+console.log(start_spec_equal('Javascript'));
